@@ -3,24 +3,22 @@ name: Refresh Florida Surf Watch
 on:
   schedule:
     - cron: "17 */3 * * *"   # every 3 hours: rebuild with fresh buoy and hurricane data
-    - cron: "41 12 * * 1"    # Mondays: also re-check the wave model against NOAA buoys
+    - cron: "41 12 * * 1"    # Mondays: also run the weekly accuracy scorecard
   push:
     branches: [main]         # rebuild whenever the code changes
   workflow_dispatch:         # "Run workflow" button for a manual refresh
 
 permissions:
-  contents: read
+  contents: write            # only used by the weekly scorecard commit
 
 concurrency:
-  group: pages
+  group: deploy
   cancel-in-progress: false
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    permissions:
-      contents: write        # only used by the weekly accuracy commit
     steps:
       - uses: actions/checkout@v7
 
@@ -38,7 +36,7 @@ jobs:
         timeout-minutes: 8
         run: node validate.js
 
-      - name: Save the scorecard (weekly; this commit also keeps the schedule active)
+      - name: Save the scorecard (weekly)
         if: github.event.schedule == '41 12 * * 1'
         continue-on-error: true
         run: |
@@ -53,19 +51,13 @@ jobs:
       - name: Build the page
         run: python3 assemble.py site/index.html
 
-      - uses: actions/upload-pages-artifact@v5
-        with:
-          path: site
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v5
+      - name: Publish privately to Cloudflare Pages (behind a Cloudflare Access login)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::Add the CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID secrets in Settings > Secrets and variables > Actions"; exit 1
+          fi
+          npx --yes wrangler@4 pages project create florida-surf-watch --production-branch main >/dev/null 2>&1 || true
+          npx --yes wrangler@4 pages deploy site --project-name florida-surf-watch --branch main --commit-dirty=true

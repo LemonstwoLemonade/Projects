@@ -1,0 +1,150 @@
+{
+ "generated": "2026-09-25T02:09:05.254344Z",
+ "days": 30,
+ "buoys": {
+  "41112": {
+   "name": "Fernandina Beach offshore",
+   "coast": "atl",
+   "hours": 719,
+   "obs_mean_ft": 2.71,
+   "noaa": {
+    "bias_ft": -0.42,
+    "mae_ft": 0.45,
+    "r": 0.96,
+    "within_1ft": 91
+   },
+   "ecmwf": {
+    "bias_ft": -0.2,
+    "mae_ft": 0.31,
+    "r": 0.97,
+    "within_1ft": 97
+   },
+   "blend": {
+    "bias_ft": -0.31,
+    "mae_ft": 0.36,
+    "r": 0.97,
+    "within_1ft": 94
+   }
+  },
+  "41117": {
+   "name": "St. Augustine offshore",
+   "coast": "atl",
+   "hours": 719,
+   "obs_mean_ft": 2.71,
+   "noaa": {
+    "bias_ft": -0.02,
+    "mae_ft": 0.33,
+    "r": 0.97,
+    "within_1ft": 97
+   },
+   "ecmwf": {
+    "bias_ft": 0.16,
+    "mae_ft": 0.32,
+    "r": 0.97,
+    "within_1ft": 98
+   },
+   "blend": {
+    "bias_ft": 0.07,
+    "mae_ft": 0.29,
+    "r": 0.97,
+    "within_1ft": 98
+   }
+  },
+  "41113": {
+   "name": "Cape Canaveral nearshore",
+   "coast": "atl",
+   "hours": 719,
+   "obs_mean_ft": 1.74,
+   "noaa": {
+    "bias_ft": 0.14,
+    "mae_ft": 0.3,
+    "r": 0.91,
+    "within_1ft": 97
+   },
+   "ecmwf": {
+    "bias_ft": 0.44,
+    "mae_ft": 0.5,
+    "r": 0.91,
+    "within_1ft": 91
+   },
+   "blend": {
+    "bias_ft": 0.29,
+    "mae_ft": 0.37,
+    "r": 0.92,
+    "within_1ft": 96
+   }
+  },
+  "41114": {
+   "name": "Fort Pierce offshore",
+   "coast": "atl",
+   "hours": 59,
+   "obs_mean_ft": 2.34,
+   "noaa": {
+    "bias_ft": -0.24,
+    "mae_ft": 0.31,
+    "r": 0.98,
+    "within_1ft": 97
+   },
+   "ecmwf": {
+    "bias_ft": -0.35,
+    "mae_ft": 0.42,
+    "r": 0.97,
+    "within_1ft": 90
+   },
+   "blend": {
+    "bias_ft": -0.29,
+    "mae_ft": 0.36,
+    "r": 0.98,
+    "within_1ft": 93
+   }
+  },
+  "42036": {
+   "name": "West Tampa (Gulf)",
+   "coast": "gulf",
+   "hours": 700,
+   "obs_mean_ft": 1.79,
+   "noaa": {
+    "bias_ft": -0.32,
+    "mae_ft": 0.37,
+    "r": 0.96,
+    "within_1ft": 96
+   },
+   "ecmwf": {
+    "bias_ft": -0.04,
+    "mae_ft": 0.25,
+    "r": 0.96,
+    "within_1ft": 98
+   },
+   "blend": {
+    "bias_ft": -0.18,
+    "mae_ft": 0.26,
+    "r": 0.97,
+    "within_1ft": 98
+   }
+  },
+  "42098": {
+   "name": "Egmont Channel, Tampa Bay (Gulf)",
+   "coast": "gulf",
+   "hours": 716,
+   "obs_mean_ft": 1.4,
+   "noaa": {
+    "bias_ft": -0.5,
+    "mae_ft": 0.54,
+    "r": 0.78,
+    "within_1ft": 89
+   },
+   "ecmwf": {
+    "bias_ft": -0.09,
+    "mae_ft": 0.27,
+    "r": 0.86,
+    "within_1ft": 99
+   },
+   "blend": {
+    "bias_ft": -0.29,
+    "mae_ft": 0.38,
+    "r": 0.84,
+    "within_1ft": 98
+   }
+  }
+ }
+}

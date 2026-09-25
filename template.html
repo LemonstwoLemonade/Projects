@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Florida Surf Watch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Big+Shoulders+Display:wght@600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sea:#0B4F6C; --deep:#07334A; --paper:#F1F6F7; --card:#FFFFFF; --ink:#0F2530; --muted:#4D6570; --line:#CFDDE2; --land:#E9D8A6; --land-edge:#CBB67C;
+  --s-flat:#9FB3BD; --s-poor:#6D8FA0; --s-fair:#2E9C95; --s-good:#1F8A4C; --s-great:#E8A21A; --s-epic:#E4502B;
+  --f-green:#2E8B3E; --f-yellow:#E7B416; --f-red:#D0342C; --f-dred:#8E1B16;
+  --display:"Big Shoulders Display", "Arial Narrow", Impact, sans-serif;
+  --body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#08202C; --card:#0E2C3B; --ink:#E6F0F3; --muted:#A5BCC5; --line:#23485A; --sea:#0A3A50; --deep:#04202E; --land:#C9B98C; --land-edge:#A8975F;
+}}
+:root[data-theme="dark"]{ --paper:#08202C; --card:#0E2C3B; --ink:#E6F0F3; --muted:#A5BCC5; --line:#23485A; --sea:#0A3A50; --deep:#04202E; --land:#C9B98C; --land-edge:#A8975F; }
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--s-great);outline-offset:2px}
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+
+/* top bar */
+header.top{background:var(--deep);color:#fff}
+header.top .wrap{display:flex;align-items:center;gap:12px;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:900;font-size:30px;letter-spacing:.5px;line-height:1;margin:0}
+.status{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:14px;color:#CFE3EA}
+.dot{width:10px;height:10px;border-radius:50%;background:#9FB3BD;display:inline-block}
+.dot.live{background:#3BD17A;box-shadow:0 0 0 4px rgba(59,209,122,.2)}
+.dot.old{background:#E7B416}
+.btn{border:1px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:999px;padding:6px 14px;cursor:pointer}
+.btn:hover{background:rgba(255,255,255,.1)}
+
+/* warnings */
+.warn{background:#FFF3D6;color:#4A3300;border-bottom:1px solid #EBD28F}
+.warn .wrap{padding-top:10px;padding-bottom:10px;display:grid;gap:6px;font-size:15px}
+.warn b{font-weight:700}.warn summary{cursor:pointer;font-weight:700}.warn details div{margin-top:4px}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .warn{background:#3A2E0B;color:#FBE7B0;border-color:#5A4714} }
+
+/* controls */
+.controls{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;padding:18px 0 6px}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:3px}
+.seg button{border:0;background:transparent;padding:8px 14px;border-radius:9px;cursor:pointer;font-weight:700;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--sea);color:#fff}
+.ctl-label{font-size:14px;color:var(--muted);margin-right:6px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr);gap:0;margin:10px 0 22px;border-radius:18px;overflow:hidden;background:var(--sea);color:#fff;position:relative}
+.hero-in{padding:22px 22px 20px;position:relative;z-index:1}
+.hero .kicker{font-size:15px;color:#CFE3EA;margin:0 0 4px}
+.hero h2{font-family:var(--display);font-weight:900;font-size:clamp(44px,9vw,84px);line-height:.92;margin:0 0 10px;letter-spacing:.3px}
+.hero .big{font-family:var(--display);font-weight:800;font-size:clamp(34px,6vw,54px);line-height:1}
+.hero .row{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:baseline;margin-bottom:12px}
+.hero p{margin:4px 0;max-width:60ch;font-size:18px}
+.hero .when{font-weight:700}
+.hero svg.swell{position:absolute;inset:auto 0 0 0;width:100%;height:70px;opacity:.18;z-index:0}
+.hero-none h2{font-size:clamp(34px,7vw,56px)}
+.pill{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:4px 12px 4px 6px;font-weight:700;font-size:15px;background:rgba(255,255,255,.14)}
+.score-badge{display:inline-flex;align-items:center;justify-content:center;min-width:44px;height:30px;border-radius:8px;font-weight:700;color:#fff;padding:0 8px;font-size:15px}
+.flag{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:700}
+.flag i{width:16px;height:12px;display:inline-block;border-radius:1px;position:relative;margin-left:4px}
+.flag i::before{content:"";position:absolute;left:-4px;top:-2px;width:2px;height:18px;background:currentColor;opacity:.6}
+
+/* layout */
+.grid{display:grid;grid-template-columns:minmax(0,1fr);gap:22px}
+@media(min-width:920px){ .grid{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)} .mapcol{position:sticky;top:12px;align-self:start} }
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px}
+h3{font-family:var(--display);font-weight:800;font-size:30px;line-height:1.05;margin:0 0 10px;letter-spacing:.3px}
+h4{font-size:17px;margin:0 0 6px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+
+/* map */
+.map{padding:10px}
+.map svg{width:100%;height:auto;display:block;border-radius:12px}
+.pin{cursor:pointer}
+.pin circle.halo{fill:none;stroke:#fff;stroke-width:5;opacity:0}
+.pin.sel circle.halo{opacity:1}
+.pin text{font:700 30px var(--body);fill:#fff;paint-order:stroke;stroke:rgba(4,32,46,.85);stroke-width:4px;pointer-events:none}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;padding:8px 6px 4px;font-size:14px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:50%;display:inline-block}
+
+/* list */
+.list{list-style:none;margin:0;padding:0}
+.list li button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:4px 12px;align-items:center;width:100%;padding:12px 14px;border-top:1px solid var(--line)}
+.list li:first-child button{border-top:0}
+.list li button:hover{background:rgba(11,79,108,.06)}
+.list li button[aria-current="true"]{background:rgba(11,79,108,.12)}
+.list li button:focus-visible{outline:3px solid var(--s-great);outline-offset:-3px}
+.list .nm{font-weight:700}
+.list .sub{grid-column:2/4;font-size:14px;color:var(--muted)}
+.list .ht{font-family:var(--display);font-weight:800;font-size:24px;white-space:nowrap}
+.coast{font-size:12px;border:1px solid var(--line);border-radius:6px;padding:1px 6px;color:var(--muted);margin-left:6px;font-weight:400}
+
+/* detail */
+.detail{padding:18px}
+.detail-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-bottom:8px}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}
+.fact{border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.fact .k{font-size:13px;color:var(--muted)}
+.fact .v{font-weight:700;font-size:18px}
+.chart svg{width:100%;height:auto;display:block}
+.chart text{font:14px var(--body);fill:var(--muted)}
+.chart .hl{font-weight:700;fill:var(--ink)}
+.why{display:grid;gap:8px;margin-top:6px}
+.bar{display:grid;grid-template-columns:120px 1fr 44px;gap:10px;align-items:center;font-size:15px}
+.bar .track{height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar .fill{height:100%;background:var(--sea)}
+.nws{border-left:4px solid var(--sea);padding:8px 12px;background:rgba(11,79,108,.06);border-radius:0 10px 10px 0;margin:12px 0}
+
+/* info */
+section.info{margin:34px 0}
+.cols{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:820px){.cols{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.info .card{padding:18px 20px}
+.info p,.info li{max-width:68ch}
+.info ul{padding-left:20px;margin:6px 0}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-weight:700;color:var(--muted);font-size:13px}
+.ok{color:var(--s-good);font-weight:700}.miss{color:var(--f-red);font-weight:700}
+footer{padding:26px 0 40px;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important} }
+@keyframes rise{from{transform:translateY(8px);opacity:0}to{transform:none;opacity:1}}
+.hero-in{animation:rise .5s ease-out both}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1 class="brand">Florida Surf Watch</h1>
+    <div class="status" id="status"><span class="dot" id="dot"></span><span id="statusText">Loading…</span>
+      <button class="btn" id="refresh" type="button">Refresh</button></div>
+  </div>
+</header>
+<div class="warn" id="warn" hidden><div class="wrap" id="warnList"></div></div>
+
+<main class="wrap">
+  <div class="controls">
+    <div><span class="ctl-label" id="dayLabel">Day</span><div class="seg" id="days" role="group" aria-labelledby="dayLabel"></div></div>
+    <div><span class="ctl-label" id="skillLabel">Best bets for</span><div class="seg" id="skill" role="group" aria-labelledby="skillLabel">
+      <button type="button" data-skill="all" aria-pressed="true">Most surfers</button>
+      <button type="button" data-skill="expert" aria-pressed="false">Experienced</button></div></div>
+  </div>
+
+  <section class="hero" id="hero" aria-live="polite"></section>
+
+  <div class="grid">
+    <div class="mapcol">
+      <div class="card map"><div id="map"></div>
+        <div class="legend" id="legend"></div></div>
+    </div>
+    <div>
+      <div class="card"><ul class="list" id="list"></ul></div>
+    </div>
+  </div>
+
+  <section class="card detail" id="detail" style="margin-top:22px" tabindex="-1"></section>
+
+  <section class="info">
+    <div class="cols">
+      <div class="card">
+        <h3>How to read this</h3>
+        <ul>
+          <li><b>Wave height</b> is the size of the wave face when it breaks, in feet. "Knee to waist high" means it would reach about that high on an adult standing in the water.</li>
+          <li><b>Wind matters most.</b> Wind blowing from land out to sea (offshore) makes waves smooth and clean. Wind blowing from the sea onto the beach (onshore) makes them choppy.</li>
+          <li><b>Period</b> is the seconds between waves. Bigger numbers (10+ seconds) mean waves traveled from far away and have more power and better shape. Florida usually sees 6–9 seconds.</li>
+          <li><b>Tide</b> is the water level. Most Florida beaches break best around the middle of the tide, especially while it is rising.</li>
+          <li><b>The score (0–10)</b> adds up size, period, wind, and tide. The "Why this score" bars in each spot show exactly where the points came from.</li>
+          <li><b>Safety comes first.</b> The flag colors follow Florida beach flags. Rip currents are the number one danger at the beach. If you get caught in one, don't fight it — swim parallel to shore, then back in.</li>
+        </ul>
+      </div>
+      <div class="card" id="accuracy"></div>
+    </div>
+    <div class="card" style="margin-top:18px" id="sources"></div>
+  </section>
+  <footer>Forecasts are estimates. Always check conditions and lifeguard flags at the beach before going in. Not an official NWS product.</footer>
+</main>
+
+<script>
+__ENGINE__
+</script>
+<script>
+const SNAPSHOT = __SNAPSHOT__;
+const VALIDATION = __VALIDATION__;
+const FL_PATH = "__FLPATH__";
+(function(){
+const E = window.SurfEngine;
+const COLORS = {Flat:"var(--s-flat)",Poor:"var(--s-poor)",Fair:"var(--s-fair)",Good:"var(--s-good)",Great:"var(--s-great)",Epic:"var(--s-epic)"};
+const HEX = {Flat:"#9FB3BD",Poor:"#6D8FA0",Fair:"#2E9C95",Good:"#1F8A4C",Great:"#E8A21A",Epic:"#E4502B"};
+const FLAG = {all:["var(--f-green)","Green flag"], intermediate:["var(--f-yellow)","Yellow flag"], expert:["var(--f-red)","Red flag"], danger:["var(--f-dred)","Double red"]};
+const state = {raw:SNAPSHOT, model:null, day:0, skill:"all", sel:null, live:false};
+const $ = id => document.getElementById(id);
+const esc = s => String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtTime = (ms,tz,opt) => new Intl.DateTimeFormat("en-US",{timeZone:tz,...opt}).format(new Date(ms));
+const hr = (ms,tz) => fmtTime(ms,tz,{hour:"numeric"}).replace(" ","\u00a0");
+const dayName = (key,i) => i===0?"Today": i===1?"Tomorrow": new Date(key+"T12:00:00Z").toLocaleDateString("en-US",{weekday:"long",timeZone:"UTC"});
+const tzAbbr = tz => tz==="America/Chicago"?"CT":"ET";
+
+function flagChip(sf){ if(!sf) return ""; const [c,n]=FLAG[sf.level]; return `<span class="flag" title="${n}"><i style="background:${c};color:${c}"></i>${esc(sf.text)}</span>`; }
+function badge(score){ const l=E.labelFor(score); return `<span class="score-badge" style="background:${COLORS[l]}">${l} ${score.toFixed(1)}</span>`; }
+const allowed = sf => sf && (state.skill==="expert" ? sf.level!=="danger" : (sf.level==="all"||sf.level==="intermediate"));
+
+function rankFor(day){
+  return state.model.spots.map(s=>({s, d:s.days[day]})).filter(x=>x.d && x.d.best).sort((a,b)=>b.d.best.avg-a.d.best.avg);
+}
+
+function renderStatus(){
+  const m=state.model, ageH=(Date.now()-Date.parse(state.raw.fetchedAt))/3.6e6;
+  const t=fmtTime(Date.parse(state.raw.fetchedAt),"America/New_York",{weekday:"short",hour:"numeric",minute:"2-digit"});
+  $("dot").className="dot "+(state.live?"live":ageH>6?"old":"");
+  $("statusText").textContent = state.live ? `Live · updated ${t} ET` : `Saved data from ${t} ET`;
+}
+
+function renderWarnings(){
+  const ORDER=[/Hurricane|Tropical Storm|Storm Surge|Tsunami/i,/High Surf Warning/i,/High Surf Advisory/i,/Rip Current/i,/Beach Hazards/i,/Coastal Flood/i];
+  const groups={};
+  state.model.spots.forEach(s=>s.alerts.forEach(a=>{ const g=(groups[a.event]=groups[a.event]||{event:a.event,spots:new Set(),ends:a.ends}); if(a.ends&&(!g.ends||Date.parse(a.ends)>Date.parse(g.ends))) g.ends=a.ends; g.spots.add(s.name.replace(/ (Pier|Inlet|Jetty|Beach Pier)$/,"")); }));
+  const rank=e=>{const i=ORDER.findIndex(r=>r.test(e));return i<0?9:i;};
+  const line=g=>`<div><b>${esc(g.event)}</b>: ${esc([...g.spots].join(", "))}${g.ends?` <span class="small">(until as late as ${fmtTime(Date.parse(g.ends),"America/New_York",{weekday:"short",hour:"numeric"})} ET)</span>`:""}</div>`;
+  const list=Object.values(groups).sort((a,b)=>rank(a.event)-rank(b.event));
+  const items=list.slice(0,2).map(line);
+  if (list.length>2) items.push(`<details><summary>${list.length-2} more NWS alert${list.length>3?"s":""}</summary>${list.slice(2).map(line).join("")}</details>`);
+  const st=state.model.storms;
+  if (st && st.list.length) items.push(`<div><b>Tropics</b>: ${st.list.map(x=>`${x.cls==="HU"?"Hurricane":x.cls==="TS"?"Tropical Storm":x.cls==="TD"?"Tropical Depression":esc(x.cls)} ${esc(x.name)} is near ${esc(x.lat)} ${esc(x.lon)}`).join("; ")}. <a href="https://www.nhc.noaa.gov" target="_blank" rel="noopener">Track it at nhc.noaa.gov</a></div>`);
+  $("warn").hidden=!items.length; $("warnList").innerHTML=items.join("");
+}
+function renderDays(){
+  $("days").innerHTML = state.model.dayKeys.map((k,i)=>`<button type="button" data-day="${i}" aria-pressed="${i===state.day}">${dayName(k,i)}</button>`).join("");
+}
+
+function renderHero(){
+  const r = rankFor(state.day), pick = r.find(x=>allowed(x.d.safety));
+  const dn = dayName(state.model.dayKeys[state.day],state.day);
+  const swell = `<svg class="swell" viewBox="0 0 1200 70" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 C 150 0 300 0 450 40 S 750 80 900 40 S 1100 0 1200 30 V70 H0Z" fill="#fff"/></svg>`;
+  if (!pick || pick.d.best.avg<2){
+    const flat = r.length && r[0].d.best.avg<2;
+    $("hero").innerHTML = `<div class="hero-in hero-none"><p class="kicker">${esc(dn)}</p><h2>${flat?"Florida is flat":"No safe pick"}</h2>
+      <p>${flat?"No spot has surfable waves in daylight. Good day for the beach, not the board.":"Every spot with waves has hazards like big surf or high rip current risk. Switch to “Experienced” to see them, and only go if you are a strong swimmer and surfer."}</p></div>${swell}`;
+    return;
+  }
+  const s=pick.s, b=pick.d.best, x=b.start, maxH=Math.max(...b.hours.map(h=>h.h));
+  $("hero").innerHTML = `<div class="hero-in"><p class="kicker">Best bet ${dn==="Today"?"today":dn==="Tomorrow"?"tomorrow":"on "+esc(dn)} · ${esc(s.area)}</p>
+    <h2>${esc(s.name)}</h2>
+    <div class="row"><span class="big">${E.heightRange(maxH)}</span><span style="font-size:19px">${E.sizeWords(maxH)}</span></div>
+    <p class="when">Go ${hr(b.start.t,s.tz)}–${hr(b.end.t+3600000,s.tz)} ${tzAbbr(s.tz)}</p>
+    <p>${esc(E.windWords(x.mph,x.wtype))} (${x.mph} mph from the ${E.compass(x.wdir)}). Waves every ${x.T} seconds${x.tide?`, tide ${x.tide.rising?"rising":"falling"}`:""}.</p>
+    <div class="row" style="margin-top:12px;margin-bottom:0">${badge(b.avg)} <span class="pill">${flagChip(pick.d.safety)}</span>
+      <button class="btn" type="button" data-open="${s.id}">See the details</button></div></div>${swell}`;
+}
+
+function proj(lat,lon){ return [ (lon+87.7)*Math.cos(27.8*Math.PI/180)*100, (31.1-lat)*100 ]; }
+function renderMap(){
+  const pins = state.model.spots.map(s=>{
+    const d=s.days[state.day], sc=d&&d.best?d.best.avg:0, l=E.labelFor(sc); const [x,y]=proj(s.lat,s.lon);
+    const sel=state.sel===s.id;
+    const east = s.coast==="Atlantic" || s.lon>-83.5; const label = sel ? `<text x="${east?x-26:x+26}" y="${y+6}" text-anchor="${east?"end":"start"}">${esc(s.name)}</text>`:"";
+    return `<g class="pin${sel?" sel":""}" data-open="${s.id}" role="button" tabindex="0" aria-label="${esc(s.name)}: ${l}"><circle cx="${x}" cy="${y}" r="30" fill="transparent"/><circle class="halo" cx="${x}" cy="${y}" r="21"/><circle cx="${x}" cy="${y}" r="15" fill="${HEX[l]}" stroke="#04202E" stroke-width="3"/>${label}</g>`;
+  }).join("");
+  $("map").innerHTML = `<svg viewBox="-20 -10 800 690" role="img" aria-label="Map of Florida surf spots colored by forecast quality">
+    <rect x="-20" y="-10" width="800" height="690" fill="var(--sea)"/>
+    <path d="${FL_PATH}" fill="var(--land)" stroke="var(--land-edge)" stroke-width="1.5"/>
+    <text x="190" y="330" fill="#fff" opacity=".55" style="font:800 30px var(--display);letter-spacing:4px">THE GULF</text>
+    <text x="705" y="200" fill="#fff" opacity=".55" style="font:800 30px var(--display);letter-spacing:4px" transform="rotate(90 705 200)">ATLANTIC</text>
+    ${pins}</svg>`;
+  $("legend").innerHTML = Object.keys(HEX).map(l=>`<span><i style="background:${HEX[l]}"></i>${l}</span>`).join("")+`<span class="small">· tap a dot for details</span>`;
+}
+
+function renderList(){
+  const r=rankFor(state.day);
+  $("list").innerHTML = r.map(({s,d})=>{ const b=d.best, mx=Math.max(...b.hours.map(h=>h.h));
+    return `<li><button type="button" data-open="${s.id}" aria-current="${state.sel===s.id}">
+      ${badge(b.avg)}<span class="nm">${esc(s.name)}<span class="coast">${s.coast}</span></span><span class="ht">${E.heightRange(mx)}</span>
+      <span class="sub">Best ${hr(b.start.t,s.tz)}–${hr(b.end.t+3600000,s.tz)} ${tzAbbr(s.tz)} · ${esc(E.windWords(b.start.mph,b.start.wtype).split(" — ")[0])} · ${flagChip(d.safety)}</span></button></li>`; }).join("");
+}
+
+function chartW(){ const w=($("detail").clientWidth||640)-36; return Math.max(320,Math.min(720,w)); }
+function chartSVG(s, hours){
+  const W=chartW(),H=250,L=30,R=6,T=26,B=78, n=hours.length; if(!n) return "<p class='muted'>No daylight hours left for this day.</p>";
+  const bw=(W-L-R)/n, maxH=Math.max(4,...hours.map(h=>h.h)); const y=v=>T+(H-T-B)*(1-v/10);
+  let g=`<svg viewBox="0 0 ${W} ${H}" style="max-width:${W}px" role="img" aria-label="Hourly forecast for ${esc(s.name)}">`;
+  [0,5,10].forEach(v=>g+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`);
+  hours.forEach((h,i)=>{ const l=E.labelFor(h.score), x=L+i*bw;
+    g+=`<rect x="${x+2}" y="${y(h.score)}" width="${bw-4}" height="${y(0)-y(h.score)}" rx="3" fill="${HEX[l]}"><title>${hr(h.t,s.tz)}: ${l} ${h.score}, ${h.h} ft</title></rect>`;
+    if (i%(bw<34?2:1)===0){ g+=`<text x="${x+bw/2}" y="${y(h.score)-6}" text-anchor="middle" class="hl">${h.h<1?"<1":Math.round(h.h)}</text>`;
+      g+=`<text x="${x+bw/2}" y="${H-B+18}" text-anchor="middle">${hr(h.t,s.tz).replace(/\u00a0?(AM|PM)/,m=>m.trim()[0].toLowerCase())}</text>`;
+      const to=(h.wdir+180)%360, cx=x+bw/2, cy=H-B+42, col=h.wtype==="offshore"||h.wtype==="cross-offshore"||h.mph<5?"var(--s-good)":h.wtype==="onshore"?"var(--f-red)":"var(--muted)";
+      g+=`<g transform="translate(${cx},${cy}) rotate(${to})"><path d="M0,-10 L5,4 L0,1 L-5,4Z" fill="${col}"/></g><text x="${cx}" y="${cy+26}" text-anchor="middle">${h.mph}</text>`; }
+  });
+  g+=`<text x="${L}" y="14" class="hl">Score by hour (number = wave height in ft)</text><text x="4" y="${H-B+46}">wind</text><text x="4" y="${H-B+68}">mph</text></svg>`;
+  return g;
+}
+function tideSVG(s, dayKey){
+  const p=s.tidePreds; if(!p||p.length<2) return "";
+  const hs=s.hours.filter(h=>h.day===dayKey); if(!hs.length) return "";
+  const start=Date.parse(new Date(hs[0].t).toISOString().slice(0,13)+":00:00Z"); const t0=hs[0].t - (hs[0].hour)*3.6e6, t1=t0+24*3.6e6;
+  const W=chartW(),H=130,L=30,R=6; const pts=[]; let lo=Infinity,hi=-Infinity;
+  for(let t=t0;t<=t1;t+=1.8e6){ let v=null; for(let i=1;i<p.length;i++){ if(t>=p[i-1].t&&t<=p[i].t){ const f=(t-p[i-1].t)/(p[i].t-p[i-1].t); v=p[i-1].v+(p[i].v-p[i-1].v)*(1-Math.cos(Math.PI*f))/2; break; } }
+    if(v!=null){pts.push([t,v]);lo=Math.min(lo,v);hi=Math.max(hi,v);} }
+  if(pts.length<3) return ""; const X=t=>L+(W-L-R)*(t-t0)/(t1-t0), Y=v=>30+(H-62)*(1-(v-lo)/((hi-lo)||1));
+  const d=pts.map(([t,v],i)=>(i?"L":"M")+X(t).toFixed(1)+","+Y(v).toFixed(1)).join("");
+  const ext=p.filter(e=>e.t>=t0&&e.t<=t1).map(e=>{ const tx=Math.max(L+30,Math.min(W-40,X(e.t))); return `<circle cx="${X(e.t)}" cy="${Y(e.v)}" r="4" fill="var(--sea)"/><text x="${tx}" y="${e.type==="H"?Y(e.v)-10:Y(e.v)+20}" text-anchor="middle" class="hl">${e.type==="H"?"High":"Low"} ${hr(e.t,s.tz)}</text>`;}).join("");
+  const now=Date.now(); const nowL = now>t0&&now<t1?`<line x1="${X(now)}" x2="${X(now)}" y1="8" y2="${H-24}" stroke="var(--s-epic)" stroke-dasharray="4 3"/><text x="${X(now)+4}" y="${H-10}" fill="var(--s-epic)">now</text>`:"";
+  return `<svg viewBox="0 0 ${W} ${H}" style="max-width:${W}px" role="img" aria-label="Tide curve"><path d="${d}" fill="none" stroke="var(--sea)" stroke-width="3"/>${ext}${nowL}<text x="4" y="16">tide</text></svg>`;
+}
+
+function renderDetail(){
+  const s=state.model.spots.find(x=>x.id===state.sel) || rankFor(state.day)[0]?.s; if(!s){$("detail").innerHTML="";return;}
+  const key=state.model.dayKeys[state.day], d=s.days[state.day];
+  const hours=s.hours.filter(h=>h.day===key && h.daylight);
+  const b=d&&d.best; const x=b?b.start:hours[0];
+  const rip = s.srf ? s.srf.periods.filter(p=>!/NIGHT/.test(p.name))[state.day] : null;
+  const parts = x ? x.parts : null;
+  const bar=(name,val,max,explain)=>`<div class="bar"><span>${name}</span><span class="track" title="${esc(explain)}"><span class="fill" style="width:${100*val/max}%;display:block"></span></span><span>${val.toFixed(1)}/${max}</span></div><div class="small muted" style="margin:-4px 0 4px 130px">${esc(explain)}</div>`;
+  $("detail").innerHTML = `
+    <div class="detail-head"><h3 style="margin:0">${esc(s.name)}</h3><span class="muted">${esc(s.area)} · ${s.coast} coast · faces ${E.compass(s.face)}</span></div>
+    ${b?`<div>${badge(b.avg)} ${flagChip(d.safety)}</div>`:""}
+    <div class="facts">
+      <div class="fact"><div class="k">Best time ${esc(dayName(key,state.day).toLowerCase())}</div><div class="v">${b?`${hr(b.start.t,s.tz)}–${hr(b.end.t+3600000,s.tz)} ${tzAbbr(s.tz)}`:"–"}</div></div>
+      <div class="fact"><div class="k">Wave height then</div><div class="v">${b?E.heightRange(Math.max(...b.hours.map(h=>h.h))):"–"}</div></div>
+      <div class="fact"><div class="k">Swell offshore</div><div class="v">${x?`${x.H0ft} ft · ${x.T}s · from ${E.compass(x.dir)}`:"–"}</div></div>
+      <div class="fact"><div class="k">Wind then</div><div class="v">${x?`${x.mph} mph ${x.wtype}`:"–"}</div></div>
+      ${s.buoy?`<div class="fact"><div class="k">Buoy ${s.buoy.id} measured (${fmtTime(s.buoy.time,s.tz,{weekday:"short",hour:"numeric",minute:"2-digit"})})</div><div class="v">${s.buoy.wvhtFt} ft${s.buoy.period?` · ${s.buoy.period}s`:""}${s.buoy.dir!=null?` · from ${E.compass(s.buoy.dir)}`:""}</div></div>`:""}
+      ${s.buoy&&s.buoy.waterF?`<div class="fact"><div class="k">Water temperature</div><div class="v">${s.buoy.waterF}°F · ${s.buoy.waterF>=77?"boardshorts":s.buoy.waterF>=68?"spring suit":"wetsuit"}</div></div>`:""}
+    </div>
+    ${s.srf?`<div class="nws"><b>National Weather Service surf forecast${rip?` (${esc(rip.name.charAt(0)+rip.name.slice(1).toLowerCase())})`:""}:</b> ${rip?`surf ${esc((rip.surf||"n/a").replace(/\.$/,"").toLowerCase())}, rip current risk <b>${esc(rip.rip||"n/a")}</b>.`:"not available for this day."}</div>`:""}
+    <div class="chart">${chartSVG(s,hours)}</div>
+    <div class="chart">${tideSVG(s,key)}</div>
+    ${parts?`<h4 style="margin-top:14px">Why this score (at ${hr(x.t,s.tz)})</h4><div class="why">
+      ${bar("Wave size",parts.size,3.5,`${E.heightRange(x.h)} — ${E.sizeWords(x.h)}. Too small or too huge both lose points.`)}
+      ${bar("Wave period",parts.period,1.5,`${x.T} seconds between waves. Longer means more power and cleaner lines.`)}
+      ${bar("Wind",parts.wind,4,E.windWords(x.mph,x.wtype)+`. Wind also shapes the waves: this wind keeps ${Math.round(parts.windFactor*100)}% of the size and period points.`)}
+      ${bar("Tide",parts.tide,1,x.tide?`${x.tide.rising?"Rising":"Falling"} tide, ${x.tide.v} ft. Mid-tide on the way up is usually best.`:"Tide data unavailable.")}
+    </div>`:""}
+    <p class="small muted" style="margin-top:12px">Wave model: ${esc(s.model||"–")}. Wind: NOAA GFS/HRRR. Tides: NOAA station ${s.tide}.</p>`;
+}
+
+function renderAccuracy(){
+  const c=state.model.compare, ok=c.filter(x=>x.within).length;
+  const rows=c.map(x=>`<tr><td>${esc(x.name)}</td><td>${x.day?"Tomorrow":"Today"}</td><td>${esc(x.nws)}</td><td>${x.ours<1?"under 1":x.ours} ft</td><td class="${x.within?"ok":"miss"}">${x.within?"Agrees":"Differs"}</td></tr>`).join("");
+  const v=VALIDATION.buoys; const pc=Object.values(v).map(o=>(o.coast==="atl"?o.noaa:o.ecmwf).within_1ft); const vr=Math.min(...pc)===Math.max(...pc)?`${pc[0]}%`:`${Math.min(...pc)}–${Math.max(...pc)}%`; const vb=Object.entries(v).map(([id,o])=>{ const m=o.coast==="atl"?o.noaa:o.ecmwf; return `<tr><td>${esc(o.name)}</td><td>${o.coast==="atl"?"NOAA":"ECMWF"}</td><td>${m.within_1ft}%</td><td>${m.mae_ft} ft</td></tr>`;}).join("");
+  $("accuracy").innerHTML = `<h3>How good is this forecast?</h3>
+    <p><b>Check 1 — against NOAA buoys.</b> Over the ${VALIDATION.days} days before ${new Date(VALIDATION.generated).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}, the offshore wave model was within 1 foot of what NOAA buoys actually measured ${vr} of the time. That's why the Atlantic uses NOAA's model and the Gulf uses ECMWF's: each did better on its own coast.</p>
+    <div class="tbl"><table><thead><tr><th>Buoy</th><th>Model</th><th>Within 1 ft</th><th>Typical miss</th></tr></thead><tbody>${vb}</tbody></table></div>
+    <p style="margin-top:14px"><b>Check 2 — against local NWS forecasters, live.</b> Right now our surf height agrees (within 1 ft) with the NWS surf zone forecast in <b>${ok} of ${c.length}</b> cases.</p>
+    <details><summary>See every comparison</summary><div class="tbl"><table><thead><tr><th>Spot</th><th>Day</th><th>NWS says</th><th>We say</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></details>
+    <p style="margin-top:14px"><b>What this can't do.</b></p>
+    <ul>
+      <li>It can't see sandbars, jetties, or piers, which change how each break works. Local knowledge still wins.</li>
+      <li>The Atlantic height correction (0.75×) was tuned on one storm in September 2026 and tested on a held-out day. The live check above will show if it drifts.</li>
+      <li>The Gulf gets very little surf, so Gulf heights weren't tuned. When NWS and this page disagree on the Gulf, trust NWS.</li>
+      <li>The "quality score" is a rule of thumb built from standard surf-forecasting principles. It hasn't been scored against real surf reports yet.</li>
+      <li>Past about 3 days, wind forecasts get shaky, so this page stops at 3 days.</li>
+    </ul>`;
+}
+
+function renderSources(){
+  const st=state.raw.status||{}; const at=fmtTime(Date.parse(state.raw.fetchedAt),"America/New_York",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+  const li=Object.entries(st).map(([k,v])=>`<li>${esc(k)}: <b class="${v==="ok"?"ok":"miss"}">${esc(v)}</b></li>`).join("");
+  $("sources").style.padding="18px 20px";
+  $("sources").innerHTML = `<h3>Where the data comes from</h3>
+    <p>${state.live?"Live data, refreshed every 30 minutes while this page is open.":`Saved data collected ${at} ET. This hosted page isn't allowed to call outside websites, so it can't refresh itself. The self-hosted copy of this same file pulls live data 24/7.`}</p>
+    <ul>${li}
+      <li>NOAA NDBC buoys: measured ${SNAPSHOT.buoys&&Object.keys(SNAPSHOT.buoys).length?"at "+fmtTime(Math.max(...Object.values(SNAPSHOT.buoys).map(b=>b.time)),"America/New_York",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})+" ET":"unavailable"} (NOAA blocks browser access, so buoys update when the snapshot is rebuilt)</li>
+      <li>National Hurricane Center active storms: same as buoys</li></ul>
+    <p class="small muted">Wave models come through Open-Meteo, a free service that redistributes NOAA's WaveWatch III and ECMWF's WAM. Wind is NOAA's GFS and HRRR. Tides are NOAA CO-OPS predictions. Alerts and surf zone forecasts are from the National Weather Service offices in Jacksonville, Melbourne, Miami, Tampa Bay, Tallahassee, and Mobile. Visual Crossing and NOAA Climate Data Online need private API keys, so they are not used.</p>`;
+}
+
+function renderAll(){
+  if (!state.sel){ const r=rankFor(state.day); let p=r.find(x=>allowed(x.d.safety)); if(!p||p.d.best.avg<2) p=r[0]; state.sel=p?p.s.id:state.model.spots[0].id; }
+  renderStatus(); renderWarnings(); renderDays(); renderHero(); renderMap(); renderList(); renderDetail(); renderAccuracy(); renderSources();
+}
+function rebuild(){ state.model=E.build(state.raw); renderAll(); }
+
+document.addEventListener("click",e=>{
+  const o=e.target.closest("[data-open]"); if(o){ state.sel=o.dataset.open; renderMap(); renderList(); renderDetail(); if(o.closest("#hero")||o.closest("#map")) $("detail").focus({preventScroll:true}), $("detail").scrollIntoView({behavior:"smooth",block:"start"}); return; }
+  const d=e.target.closest("[data-day]"); if(d){ state.day=+d.dataset.day; state.sel=null; renderAll(); return; }
+  const k=e.target.closest("[data-skill]"); if(k){ state.skill=k.dataset.skill; document.querySelectorAll("[data-skill]").forEach(b=>b.setAttribute("aria-pressed",b===k)); state.sel=null; renderAll(); }
+});
+document.addEventListener("keydown",e=>{ if((e.key==="Enter"||e.key===" ")&&e.target.matches(".pin")){ e.preventDefault(); e.target.dispatchEvent(new MouseEvent("click",{bubbles:true})); }});
+
+async function goLive(){
+  $("statusText").textContent="Checking for live data…";
+  try{
+    const raw = await E.fetchSources((u,o)=>fetch(u,o));
+    const s=raw.status;
+    if (s["Wave model (Atlantic)"]==="ok" && s["Wind (NOAA GFS/HRRR)"]==="ok"){
+      raw.buoys=SNAPSHOT.buoys; raw.storms=SNAPSHOT.storms;  // browser-blocked sources come from the snapshot
+      if (s["Wave model (Gulf)"]!=="ok") SurfEngine.SPOTS.filter(x=>x.coast==="Gulf").forEach(x=>raw.marine[x.id]=SNAPSHOT.marine[x.id]);
+      if (!raw.srf.length) raw.srf=SNAPSHOT.srf;
+      state.raw=raw; state.live=true; rebuild(); return;
+    }
+  }catch(e){}
+  state.live=false; renderStatus();
+}
+$("refresh").addEventListener("click",goLive);
+let resizeT; window.addEventListener("resize",()=>{clearTimeout(resizeT);resizeT=setTimeout(renderDetail,200);});
+rebuild();
+goLive();
+setInterval(goLive, 30*60*1000);
+})();
+</script>
+</body>
+</html>

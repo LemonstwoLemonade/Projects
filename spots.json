@@ -1,0 +1,19 @@
+[
+{"id":"fernandina","name":"Fernandina Beach","area":"Nassau County","coast":"Atlantic","lat":30.667,"lon":-81.428,"face":85,"win":[0,160],"tz":"America/New_York","buoy":"41112","srf":["Fernandina Beach"]},
+{"id":"jaxbeach","name":"Jacksonville Beach Pier","area":"Duval County","coast":"Atlantic","lat":30.283,"lon":-81.387,"face":88,"win":[0,165],"tz":"America/New_York","buoy":"41112","srf":["Jacksonville Beach"]},
+{"id":"staug","name":"St. Augustine Beach Pier","area":"St. Johns County","coast":"Atlantic","lat":29.857,"lon":-81.264,"face":80,"win":[0,165],"tz":"America/New_York","buoy":"41117","srf":["St. Augustine"]},
+{"id":"flagler","name":"Flagler Beach Pier","area":"Flagler County","coast":"Atlantic","lat":29.480,"lon":-81.121,"face":72,"win":[0,160],"tz":"America/New_York","buoy":"41117","srf":["Palm Coast","Flagler"]},
+{"id":"nsb","name":"New Smyrna Beach Inlet","area":"Volusia County","coast":"Atlantic","lat":29.070,"lon":-80.914,"face":65,"win":[350,150],"tz":"America/New_York","buoy":"41113","srf":["New Smyrna","Daytona Beach"]},
+{"id":"cocoa","name":"Cocoa Beach Pier","area":"Brevard County","coast":"Atlantic","lat":28.368,"lon":-80.601,"face":72,"win":[15,150],"tz":"America/New_York","buoy":"41113","srf":["Cocoa Beach"]},
+{"id":"sebastian","name":"Sebastian Inlet","area":"Brevard / Indian River","coast":"Atlantic","lat":27.861,"lon":-80.446,"face":70,"win":[0,140],"tz":"America/New_York","buoy":"41113","srf":["Sebastian","Vero Beach","Coastal Indian River"]},
+{"id":"ftpierce","name":"Fort Pierce Jetty","area":"St. Lucie County","coast":"Atlantic","lat":27.469,"lon":-80.289,"face":72,"win":[0,115],"tz":"America/New_York","buoy":"41114","srf":["Fort Pierce"]},
+{"id":"jupiter","name":"Jupiter Inlet","area":"Palm Beach County","coast":"Atlantic","lat":26.943,"lon":-80.070,"face":80,"win":[0,105],"tz":"America/New_York","buoy":"41114","srf":["Coastal Palm Beach"]},
+{"id":"lakeworth","name":"Lake Worth Beach Pier","area":"Palm Beach County","coast":"Atlantic","lat":26.612,"lon":-80.034,"face":85,"win":[0,95],"tz":"America/New_York","buoy":"41114","srf":["Coastal Palm Beach"]},
+{"id":"miami","name":"South Beach, Miami","area":"Miami-Dade County","coast":"Atlantic","lat":25.770,"lon":-80.130,"face":90,"win":[350,50],"tz":"America/New_York","buoy":null,"srf":["Coastal Miami-Dade"]},
+{"id":"pensacola","name":"Pensacola Beach","area":"Escambia County","coast":"Gulf","lat":30.327,"lon":-87.142,"face":180,"win":[110,250],"tz":"America/Chicago","buoy":null,"srf":["Pensacola Beach"]},
+{"id":"navarre","name":"Navarre Beach Pier","area":"Santa Rosa County","coast":"Gulf","lat":30.376,"lon":-86.864,"face":180,"win":[110,250],"tz":"America/Chicago","buoy":null,"srf":["Navarre Beach"]},
+{"id":"destin","name":"Destin","area":"Okaloosa County","coast":"Gulf","lat":30.381,"lon":-86.470,"face":185,"win":[115,255],"tz":"America/Chicago","buoy":null,"srf":["Destin","Okaloosa Coastal"]},
+{"id":"pcb","name":"Panama City Beach Pier","area":"Bay County","coast":"Gulf","lat":30.214,"lon":-85.869,"face":210,"win":[130,275],"tz":"America/Chicago","buoy":null,"srf":["Panama City Beach"]},
+{"id":"stpete","name":"St. Pete Beach","area":"Pinellas County","coast":"Gulf","lat":27.725,"lon":-82.741,"face":255,"win":[180,320],"tz":"America/New_York","buoy":"42098","srf":["Saint Pete Beach"]},
+{"id":"naples","name":"Naples Pier","area":"Collier County","coast":"Gulf","lat":26.132,"lon":-81.807,"face":255,"win":[180,310],"tz":"America/New_York","buoy":null,"srf":["Naples"]}
+]

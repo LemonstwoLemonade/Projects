@@ -1,0 +1,71 @@
+name: Refresh Florida Surf Watch
+
+on:
+  schedule:
+    - cron: "17 */3 * * *"   # every 3 hours: rebuild with fresh buoy and hurricane data
+    - cron: "41 12 * * 1"    # Mondays: also re-check the wave model against NOAA buoys
+  push:
+    branches: [main]         # rebuild whenever the code changes
+  workflow_dispatch:         # "Run workflow" button for a manual refresh
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write        # only used by the weekly accuracy commit
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Re-check wave model against NOAA buoys (weekly and manual runs)
+        if: github.event.schedule == '41 12 * * 1' || github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 validate30.py
+
+      - name: Save the accuracy check (weekly; this commit also keeps the schedule active)
+        if: github.event.schedule == '41 12 * * 1'
+        continue-on-error: true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add validation.json
+          git diff --staged --quiet || (git commit -m "Weekly buoy accuracy check" && git push)
+
+      - name: Pull fresh data from NOAA, NWS and Open-Meteo
+        run: node build.js
+
+      - name: Build the page
+        run: python3 assemble.py site/index.html
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

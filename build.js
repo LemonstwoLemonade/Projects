@@ -7,7 +7,7 @@ const f = (u, o = {}) => fetch(u, {...o, headers: {...(o.headers || {}), 'User-A
   console.log('Source status:', raw.status, '| buoys:', Object.keys(raw.buoys).join(', ') || 'none');
   // Without waves and wind there is no forecast. Fail so the last good page stays online.
   const s = raw.status;
-  if (s['Wave model (Atlantic)'] !== 'ok' || s['Wave model (Gulf)'] !== 'ok' || s['Wind (NOAA GFS/HRRR)'] !== 'ok') {
+  if (s['Wave models (Atlantic)'] !== 'ok' || s['Wave models (Gulf)'] !== 'ok' || s['Wind models (NOAA HRRR/NBM/GFS + ECMWF)'] !== 'ok') {
     console.error('Core forecast data missing. Keeping the previous page.'); process.exit(1);
   }
   fs.writeFileSync('snapshot.json', JSON.stringify(raw));

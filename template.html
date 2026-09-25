@@ -330,6 +330,8 @@ function renderDetail(){
       <div class="fact"><div class="k">Wave height then</div><div class="v">${b?E.heightRange(Math.max(...b.hours.map(h=>h.h))):"–"}</div></div>
       <div class="fact"><div class="k">Swell offshore</div><div class="v">${x?`${x.H0ft} ft · ${x.T}s · from ${E.compass(x.dir)}`:"–"}</div></div>
       <div class="fact"><div class="k">Wind then</div><div class="v">${x?`${x.mph} mph ${x.wtype}`:"–"}</div></div>
+      ${VALIDATION.surf&&VALIDATION.surf[state.day]?`<div class="fact"><div class="k">Typical miss for ${esc(dayName(key,state.day).toLowerCase())}</div><div class="v">about ${VALIDATION.surf[state.day].mae} ft</div></div>`:""}
+      ${s.nowcast&&state.day===0?`<div class="fact"><div class="k">Buoy check</div><div class="v">${s.nowcast.r>1.05?"Buoy reads higher":s.nowcast.r<0.95?"Buoy reads lower":"Buoy agrees"} (×${s.nowcast.r.toFixed(2)})</div></div>`:""}
       ${s.buoy?`<div class="fact"><div class="k">Buoy ${s.buoy.id} measured (${fmtTime(s.buoy.time,s.tz,{weekday:"short",hour:"numeric",minute:"2-digit"})})</div><div class="v">${s.buoy.wvhtFt} ft${s.buoy.period?` · ${s.buoy.period}s`:""}${s.buoy.dir!=null?` · from ${E.compass(s.buoy.dir)}`:""}</div></div>`:""}
       ${s.buoy&&s.buoy.waterF?`<div class="fact"><div class="k">Water temperature</div><div class="v">${s.buoy.waterF}°F · ${s.buoy.waterF>=77?"boardshorts":s.buoy.waterF>=68?"spring suit":"wetsuit"}</div></div>`:""}
     </div>
@@ -342,26 +344,40 @@ function renderDetail(){
       ${bar("Wind",parts.wind,4,E.windWords(x.mph,x.wtype)+`. Wind also shapes the waves: this wind keeps ${Math.round(parts.windFactor*100)}% of the size and period points.`)}
       ${bar("Tide",parts.tide,1,x.tide?`${x.tide.rising?"Rising":"Falling"} tide, ${x.tide.v} ft. Mid-tide on the way up is usually best.`:"Tide data unavailable.")}
     </div>`:""}
-    <p class="small muted" style="margin-top:12px">Wave model: ${esc(s.model||"–")}. Wind: NOAA GFS/HRRR. Tides: NOAA station ${s.tide}.</p>`;
+    <p class="small muted" style="margin-top:12px">Waves: ${esc(s.model||"–")}${s.nowcast?`, corrected for today with NOAA buoy ${s.nowcast.buoy}`:""}. Surf size calibrated to NWS ${esc(s.office)} forecasts (×${s.calK}). Wind: average of NOAA HRRR, NBM, GFS and ECMWF. Tides: NOAA station ${s.tide}.</p>`;
 }
 
 function renderAccuracy(){
-  const c=state.model.compare, ok=c.filter(x=>x.within).length;
+  const v=VALIDATION, c=state.model.compare, ok=c.filter(x=>x.within).length;
+  const gen=new Date(v.generated).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+  const s0=v.surf&&v.surf[0], w=v.waves||{}, wd=v.wind||{};
+  const bandRows=s0?Object.entries(s0.bands).map(([k,b])=>`<tr><td>${k}</td><td>${b.n}</td><td>${b.mae} ft</td><td>${Math.round(b.within15)}%</td></tr>`).join(""):"";
+  const leadRows=[1,2,3].map(d=>`<tr><td>${d===1?"1 day":d+" days"} ahead</td><td>${w.Atlantic&&w.Atlantic[d]?Math.round(w.Atlantic[d].within1ft)+"%":"–"}</td><td>${w.Gulf&&w.Gulf[d]?Math.round(w.Gulf[d].within1ft)+"%":"–"}</td></tr>`).join("");
   const rows=c.map(x=>`<tr><td>${esc(x.name)}</td><td>${x.day?"Tomorrow":"Today"}</td><td>${esc(x.nws)}</td><td>${x.ours<1?"under 1":x.ours} ft</td><td class="${x.within?"ok":"miss"}">${x.within?"Agrees":"Differs"}</td></tr>`).join("");
-  const v=VALIDATION.buoys; const pc=Object.values(v).map(o=>(o.coast==="atl"?o.noaa:o.ecmwf).within_1ft); const vr=Math.min(...pc)===Math.max(...pc)?`${pc[0]}%`:`${Math.min(...pc)}–${Math.max(...pc)}%`; const vb=Object.entries(v).map(([id,o])=>{ const m=o.coast==="atl"?o.noaa:o.ecmwf; return `<tr><td>${esc(o.name)}</td><td>${o.coast==="atl"?"NOAA":"ECMWF"}</td><td>${m.within_1ft}%</td><td>${m.mae_ft} ft</td></tr>`;}).join("");
+  const R=v.research;
   $("accuracy").innerHTML = `<h3>How good is this forecast?</h3>
-    <p><b>Check 1 — against NOAA buoys.</b> Over the ${VALIDATION.days} days before ${new Date(VALIDATION.generated).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})}, the offshore wave model was within 1 foot of what NOAA buoys actually measured ${vr} of the time. That's why the Atlantic uses NOAA's model and the Gulf uses ECMWF's: each did better on its own coast.</p>
-    <div class="tbl"><table><thead><tr><th>Buoy</th><th>Model</th><th>Within 1 ft</th><th>Typical miss</th></tr></thead><tbody>${vb}</tbody></table></div>
-    <p style="margin-top:14px"><b>Check 2 — against local NWS forecasters, live.</b> Right now our surf height agrees (within 1 ft) with the NWS surf zone forecast in <b>${ok} of ${c.length}</b> cases.</p>
+    <p class="small muted">Scored automatically every week over the last ${v.days} days (latest: ${gen}).</p>
+    <p><b>Surf height.</b> Usually within about <b>${s0?s0.mae:"–"} ft</b> of the National Weather Service's own same-day surf height, and within 1.5 ft ${s0?Math.round(s0.within15):"–"}% of the time. Forecasts made 1 and 2 days ahead do about as well (${v.surf&&v.surf[1]?v.surf[1].mae:"–"} and ${v.surf&&v.surf[2]?v.surf[2].mae:"–"} ft).</p>
+    <div class="tbl"><table><thead><tr><th>NWS surf size</th><th>Days</th><th>Typical miss</th><th>Within 1.5 ft</th></tr></thead><tbody>${bandRows}</tbody></table></div>
+    <p style="margin-top:14px"><b>Waves offshore.</b> How often the wave forecast lands within 1 foot of what NOAA buoys measured:</p>
+    <div class="tbl"><table><thead><tr><th>Forecast made</th><th>Atlantic</th><th>Gulf</th></tr></thead><tbody>${leadRows}</tbody></table></div>
+    <p style="margin-top:14px"><b>Wind.</b> Whether the wind is offshore, side-shore, onshore or calm matters most for wave quality. We call it right ${wd[0]?Math.round(wd[0].windTypeRight):"–"}% of the time for today and ${wd[1]?Math.round(wd[1].windTypeRight):"–"}% for tomorrow, checked against coastal weather stations. Wind is the hardest part to forecast. Check the beach before you paddle out.</p>
+    <p style="margin-top:14px"><b>Right now:</b> our surf height agrees with the NWS surf forecast (within 1 ft of its range) at <b>${ok} of ${c.length}</b> spot-days.</p>
     <details><summary>See every comparison</summary><div class="tbl"><table><thead><tr><th>Spot</th><th>Day</th><th>NWS says</th><th>We say</th><th></th></tr></thead><tbody>${rows}</tbody></table></div></details>
+    ${R?`<details style="margin-top:10px"><summary>What changed in version 2, and what we tested but threw out</summary>
+      <p class="small">Every change was chosen on ${esc(R.train)} data, then checked on ${esc(R.test)}, which it had never seen.</p>
+      <div class="tbl"><table><thead><tr><th>Change</th><th>Before</th><th>After</th><th>Measured as</th></tr></thead><tbody>${R.adopted.map(a=>`<tr><td style="white-space:normal">${esc(a.what)}</td><td>${esc(a.before)}</td><td>${esc(a.after)}</td><td style="white-space:normal">${esc(a.measure)}</td></tr>`).join("")}</tbody></table></div>
+      <ul>${R.rejected.map(x=>`<li>Rejected: ${esc(x.what)}. It ${esc(x.why)}.</li>`).join("")}</ul></details>`:""}
     <p style="margin-top:14px"><b>What this can't do.</b></p>
     <ul>
-      <li>It can't see sandbars, jetties, or piers, which change how each break works. Local knowledge still wins.</li>
-      <li>The Atlantic height correction (0.75×) was tuned on one storm in September 2026 and tested on a held-out day. The live check above will show if it drifts.</li>
-      <li>The Gulf gets very little surf, so Gulf heights weren't tuned. When NWS and this page disagree on the Gulf, trust NWS.</li>
-      <li>The "quality score" is a rule of thumb built from standard surf-forecasting principles. It hasn't been scored against real surf reports yet.</li>
-      <li>Past about 3 days, wind forecasts get shaky, so this page stops at 3 days.</li>
-    </ul>`;
+      <li>These scores compare against NWS forecasters, not a person watching the waves. Nobody publishes free, spot-by-spot surf observations for Florida, so NWS is the best public yardstick.</li>
+      <li>It can't see sandbars, jetties or piers, which shape each break. Local knowledge still wins.</li>
+      <li>Most test days were small, so big-surf scores rest on few days (see the table above).</li>
+      <li>When NWS and this page disagree, especially on the Panhandle, trust NWS.</li>
+      <li>The page stops at 3 days, because wind forecasts get shaky after that.</li>
+    </ul>
+    <details style="margin-top:10px"><summary>How this compares with Surfline, Surf Captain and Surfguru</summary>
+      <p class="small">Surfline runs its own nearshore wave model with seafloor maps, blends in buoy and satellite data, and has forecasters and cameras adjust it spot by spot. Surf Captain builds surf height from the top two swells and corrects it with nearby buoys. Surfguru pairs NOAA wave-model maps with a local Florida forecaster and cameras. This page uses public models only: it averages three wave models, corrects with buoys where one is close, and calibrates surf height to NWS forecasters. It has no cameras or human reports. Its accuracy numbers use a different yardstick than Surfline's published ones, so they are not a head-to-head comparison.</p></details>`;
 }
 
 function renderSources(){
@@ -373,7 +389,7 @@ function renderSources(){
     <ul>${li}
       <li>NOAA NDBC buoys: measured ${SNAPSHOT.buoys&&Object.keys(SNAPSHOT.buoys).length?"at "+fmtTime(Math.max(...Object.values(SNAPSHOT.buoys).map(b=>b.time)),"America/New_York",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})+" ET":"unavailable"} (NOAA blocks browser access, so buoys update when the snapshot is rebuilt)</li>
       <li>National Hurricane Center active storms: same as buoys</li></ul>
-    <p class="small muted">Wave models come through Open-Meteo, a free service that redistributes NOAA's WaveWatch III and ECMWF's WAM. Wind is NOAA's GFS and HRRR. Tides are NOAA CO-OPS predictions. Alerts and surf zone forecasts are from the National Weather Service offices in Jacksonville, Melbourne, Miami, Tampa Bay, Tallahassee, and Mobile. Visual Crossing and NOAA Climate Data Online need private API keys, so they are not used.</p>`;
+    <p class="small muted">Wave models come through Open-Meteo, a free service that redistributes NOAA's WaveWatch III, ECMWF's WAM and Météo-France's MFWAM. Wind averages NOAA's HRRR, NBM and GFS with ECMWF. Tides are NOAA CO-OPS predictions. Alerts and surf zone forecasts come from the National Weather Service offices in Jacksonville, Melbourne, Miami, Tampa Bay, Tallahassee and Mobile. Accuracy is scored against NOAA buoys, NOAA and NWS coastal stations, and the NWS surf forecast archive kept by Iowa State University. Visual Crossing and NOAA Climate Data Online need private API keys, so they are not used.</p>`;
 }
 
 function renderAll(){
@@ -394,9 +410,9 @@ async function goLive(){
   try{
     const raw = await E.fetchSources((u,o)=>fetch(u,o));
     const s=raw.status;
-    if (s["Wave model (Atlantic)"]==="ok" && s["Wind (NOAA GFS/HRRR)"]==="ok"){
+    if (s["Wave models (Atlantic)"]==="ok" && s["Wind models (NOAA HRRR/NBM/GFS + ECMWF)"]==="ok"){
       raw.buoys=SNAPSHOT.buoys; raw.storms=SNAPSHOT.storms;  // browser-blocked sources come from the snapshot
-      if (s["Wave model (Gulf)"]!=="ok") SurfEngine.SPOTS.filter(x=>x.coast==="Gulf").forEach(x=>raw.marine[x.id]=SNAPSHOT.marine[x.id]);
+      if (s["Wave models (Gulf)"]!=="ok") SurfEngine.SPOTS.filter(x=>x.coast==="Gulf").forEach(x=>raw.marine[x.id]=SNAPSHOT.marine[x.id]);
       if (!raw.srf.length) raw.srf=SNAPSHOT.srf;
       state.raw=raw; state.live=true; rebuild(); return;
     }

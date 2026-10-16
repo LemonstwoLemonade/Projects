@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "jev": {
+      "command": "npx",
+      "args": ["-y", "jev-decision-mcp@0.1.2"]
+    }
+  }
+}

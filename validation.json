@@ -1,6 +1,6 @@
 {
  "version": 2,
- "generated": "2026-10-12T13:15:26.111Z",
+ "generated": "2026-10-19T13:22:12.192Z",
  "days": 30,
  "research": {
   "date": "2026-09-25",
@@ -50,132 +50,132 @@
  "waves": {
   "Atlantic": {
    "1": {
-    "n": 3344,
-    "mae": 0.49,
-    "bias": -0.08,
-    "within1ft": 88
+    "n": 3523,
+    "mae": 0.5,
+    "bias": -0.05,
+    "within1ft": 87.9
    },
    "2": {
-    "n": 3344,
+    "n": 3523,
     "mae": 0.52,
-    "bias": -0.08,
-    "within1ft": 86.5
+    "bias": -0.05,
+    "within1ft": 86.3
    },
    "3": {
-    "n": 3344,
-    "mae": 0.55,
-    "bias": -0.08,
-    "within1ft": 84.7
+    "n": 3523,
+    "mae": 0.57,
+    "bias": -0.05,
+    "within1ft": 84.2
    }
   },
   "Gulf": {
    "1": {
-    "n": 1439,
+    "n": 1440,
     "mae": 0.46,
-    "bias": -0.03,
-    "within1ft": 91.2
+    "bias": -0.01,
+    "within1ft": 91.4
    },
    "2": {
-    "n": 1439,
-    "mae": 0.58,
-    "bias": -0.25,
-    "within1ft": 88.5
+    "n": 1440,
+    "mae": 0.59,
+    "bias": -0.18,
+    "within1ft": 87.8
    },
    "3": {
-    "n": 1439,
-    "mae": 0.7,
-    "bias": -0.38,
-    "within1ft": 83.8
+    "n": 1440,
+    "mae": 0.72,
+    "bias": -0.34,
+    "within1ft": 82.4
    }
   }
  },
  "wind": {
   "0": {
-   "n": 7161,
-   "windTypeRight": 67.4,
-   "speedMissMph": 2.38,
+   "n": 7095,
+   "windTypeRight": 68,
+   "speedMissMph": 2.45,
    "directionMissDeg": 17
   },
   "1": {
-   "n": 7161,
+   "n": 7095,
    "windTypeRight": 57.3,
-   "speedMissMph": 2.95,
-   "directionMissDeg": 27
+   "speedMissMph": 3.05,
+   "directionMissDeg": 26
   },
   "2": {
-   "n": 7161,
-   "windTypeRight": 54.9,
-   "speedMissMph": 3.3,
-   "directionMissDeg": 30
+   "n": 7095,
+   "windTypeRight": 54.8,
+   "speedMissMph": 3.4,
+   "directionMissDeg": 29
   }
  },
  "surf": {
   "0": {
    "n": 527,
-   "mae": 0.64,
-   "bias": -0.26,
-   "within15": 92.6,
+   "mae": 0.7,
+   "bias": -0.27,
+   "within15": 89.8,
    "bands": {
     "0-4 ft": {
-     "n": 447,
-     "mae": 0.56,
-     "within15": 94.2
+     "n": 439,
+     "mae": 0.57,
+     "within15": 93.2
     },
     "4-6 ft": {
-     "n": 60,
-     "mae": 0.78,
-     "within15": 86.7
+     "n": 50,
+     "mae": 1,
+     "within15": 78
     },
     "6+ ft": {
-     "n": 20,
-     "mae": 1.92,
-     "within15": 75
+     "n": 38,
+     "mae": 1.84,
+     "within15": 65.8
     }
    }
   },
   "1": {
    "n": 527,
-   "mae": 0.63,
+   "mae": 0.69,
    "bias": -0.22,
-   "within15": 92.4,
+   "within15": 89.8,
    "bands": {
     "0-4 ft": {
-     "n": 447,
-     "mae": 0.56,
-     "within15": 94
+     "n": 439,
+     "mae": 0.57,
+     "within15": 93.2
     },
     "4-6 ft": {
-     "n": 60,
-     "mae": 0.82,
-     "within15": 86.7
+     "n": 50,
+     "mae": 1.03,
+     "within15": 78
     },
     "6+ ft": {
-     "n": 20,
-     "mae": 1.49,
-     "within15": 75
+     "n": 38,
+     "mae": 1.6,
+     "within15": 65.8
     }
    }
   },
   "2": {
    "n": 527,
-   "mae": 0.68,
-   "bias": -0.2,
-   "within15": 90.9,
+   "mae": 0.74,
+   "bias": -0.21,
+   "within15": 87.9,
    "bands": {
     "0-4 ft": {
-     "n": 447,
-     "mae": 0.56,
-     "within15": 93.7
+     "n": 439,
+     "mae": 0.57,
+     "within15": 92.5
     },
     "4-6 ft": {
-     "n": 60,
-     "mae": 1.13,
-     "within15": 73.3
+     "n": 50,
+     "mae": 1.39,
+     "within15": 62
     },
     "6+ ft": {
-     "n": 20,
-     "mae": 2.08,
-     "within15": 80
+     "n": 38,
+     "mae": 1.92,
+     "within15": 68.4
     }
    }
   }
